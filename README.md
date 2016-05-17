@@ -137,7 +137,7 @@ Implement a function called **`showTweets()`** that takes as a parameter an **ar
   <td>username</td>
   <td>May 13, 2016 13:52:19 GMT</td> <!-- posting date; formatted -->
   <td>This is a tweet! #example #hashtags #programmingrocks</td> <!-- tweet text -->
-  <td>example, tags, programmingrocks</td> <!- comma-separate list of hashtags -->
+  <td>example, tags, programmingrocks</td> <!-- comma-separate list of hashtags -->
   <td>10</td> <!-- retweet count -->
   <td>2</td> <!-- sentiment score; will add in later -->
 </tr>
@@ -171,6 +171,10 @@ Implement a function **`loadSentiments()`** that takes as a parameter the _name_
 
 - Asynchronously loading and parsing the file will use the same structure as you used for loading and parsing the tweets earlier. You are welcome to create a helper `parseSentiments()` function, or you can simply use an _anonymous function_ to parse the loaded sentiment data into an Object (dictionary) to return.
 
+- I recommend you `split()` the loaded data into an array of lines, and then iterate through those as you did in the Python version.
+
+- You may also want to convert sentiment values into numbers (so a sentiment is `2`, not `'2'`).
+
 Again, you should be able to test this function by calling it and then **asynchronously** printing out the returned data, similar to how you tested the `loadTweets()` function.
 
 
@@ -190,7 +194,10 @@ Finally, we can calculate the sentiments of the tweets! Implement a function **`
 You'll need to load both the tweets _and_ the sentiments... and since both of these methods are **asynchronous**, you'll need to wait for _both_ of them to be done before you can actually assign sentiments to tweets! This is easy with Promises and jQuery using the [`$.when()`](https://api.jquery.com/jquery.when/) function:
 
 ```javascript
-$.when( asynchronousFoo(), asynchronouseBar() ).then(function(fooData, barData) {
+var fooPromise = asynchronousFoo(); //result is not anonymous
+var barPromise = asynchronousBar();
+
+$.when(fooPromise, barPromise).then(function(fooData, barData) {
     //do something with fooData and barData    
 });
 ```
@@ -198,6 +205,8 @@ $.when( asynchronousFoo(), asynchronouseBar() ).then(function(fooData, barData) 
 The `$.when()` function takes one or more promises (or calls to methods that return Promises) and then returns a _new_ Promise that will be fulfilled when all the component functions are finished. That Promise's `.then()` callback will be passed _multiple parameters_, one for the data of each component Promise. 
 
 Thus you can wait for both the tweet data and the sentiment data to be loaded before you try and use them. You should assign a `sentiment` key to _each_ "tweet' Object whose value is the sentiment of that tweet. Your `showTweets()` function (which you should call from here) can then use that value in its display (you may need to modify that function to show an actual value for the sentiment).
+
+- Don't forget to show the sentiments in your `showTweets()` function!
 
 You can test this function by calling it and passing it the names of the tweet and sentiment files:
 
